@@ -223,3 +223,4 @@ def build_bi_linear_problem(
         upper = None
 
     logger.info(f"Query interval = [{lower, upper}]")
+    return lower, upper
