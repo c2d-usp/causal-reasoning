@@ -19,7 +19,7 @@ from causal_reasoning.utils.get_scalable_df import getScalableDataFrame
 
 BIG_M = 1e4
 DBG = False
-METHOD = 4
+METHOD = -1
 
 class MasterProblem:
     def __init__(self):
