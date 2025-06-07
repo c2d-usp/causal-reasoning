@@ -37,7 +37,6 @@ class MasterProblem:
         self.model.modelSense = GRB.MINIMIZE
         # Turning off output because of the iterative procedure
         self.model.params.outputFlag = 0
-        self.model.params.Method = METHOD
         #self.model.setParam('FeasibilityTol', 1e-9) 
         self.model.update()
     
@@ -216,7 +215,6 @@ class SubProblem:
         # Turning off output because of the iterative procedure
         #self.model.setParam('FeasibilityTol', 1e-9)
         self.model.params.outputFlag = 0
-        self.model.params.Method = METHOD
         # Stop the subproblem routine as soon as the objective's best bound becomes
         #less than or equal to one, as this implies a non-negative reduced cost for
         #the entering column.
@@ -362,7 +360,7 @@ class ScalarProblem:
                                     betaVarsCost=betaVarsCoeffObjSubproblem, betaVarsBitsX0=betaVarsBitsX0, betaVarsBitsX1=betaVarsBitsX1,
                                     interventionValue=interventionValue, minimum= minimum)        
 
-    def solve(self):
+    def solve(self, method: int = -1):
         """
         Gurobi does not support branch-and-price, as this requires to add columns
         at local nodes of the search tree. A heuristic is used instead, where the
@@ -371,6 +369,8 @@ class ScalarProblem:
         solution could be overlooked, as additional columns are not generated at
         the local nodes of the search tree.
         """
+        self.master.model.params.Method = method
+        self.subproblem.model.params.Method = method
         numberIterations = self._generate_patterns()
         self.master.model.setAttr("vType", self.master.vars, GRB.CONTINUOUS)
         self.master.model.optimize()
