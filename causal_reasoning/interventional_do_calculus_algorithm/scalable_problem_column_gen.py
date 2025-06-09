@@ -61,7 +61,7 @@ class SubProblem:
         self.bitsParametric = [{} for _ in range( (1 << (N + M + 1) ) )]
         self.constr = None
 
-    def setup(self, amountBitsPerCluster: int, amountBetaVarsPerX: int, duals: list[float], amountNonTrivialRestrictions: int,
+    def setup(self, amountBitsPerCluster: int, amountBetaVarsPerX: int, duals: dict[int, float], amountNonTrivialRestrictions: int,
                 betaVarsCost: list[float], parametric_column: list[tuple[list[int]]],
                 betaVarsBitsX0: list[tuple[list[str]]], betaVarsBitsX1: list[tuple[list[str]]],
                 N: int, M: int, interventionValue: int, minimum: bool):
@@ -281,7 +281,6 @@ class ScalarProblem:
                               interventionValue=self.interventionValue,
                               minimum= self.minimum
                               )
-
         counter = 0
         while True:
             self.master.model.optimize()
@@ -330,8 +329,9 @@ class ScalarProblem:
             self.master.update(newColumn=newColumn, index=len(self.columns_base), objCoeff=objCoeff, minimun= self.minimum)
             self.columns_base.append(newColumn)
             counter += 1
-            if counter >= 1000:
-                raise TimeoutError(f"Too many iterations (mote than 1000)")
+            max = 1000
+            if counter >= max:
+                raise TimeoutError(f"Too many iterations. (Max {max})")
             logger.info(f"Iteration Number = {counter}")
 
         return counter
@@ -369,8 +369,8 @@ class ScalarProblem:
         solution could be overlooked, as additional columns are not generated at
         the local nodes of the search tree.
         """
-        self.master.model.params.Method = method
-        self.subproblem.model.params.Method = method
+        self.master.model.params.Method = 1
+        self.subproblem.model.params.Method = 1
         
         self.master.model.Params.NumericFocus = NUMERIC_FOCUS
         self.master.model.Params.Presolve = PRESOLVE

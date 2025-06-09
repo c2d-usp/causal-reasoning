@@ -50,6 +50,16 @@ With the second method, we obtain the interval: [-0.23,-0.15]
 ```bash
 deactivate
 ```
+
+## Using docker
+To run in the server
+```bash
+docker build -t image_name .
+```
+```bash
+docker run -d -v /home/danlawand/.gurobi/gurobi.lic:/opt/gurobi/gurobi.lic:ro -v /home/danlawand/causal-reasoning/resultados:/code/outputs image_name python3 script_name.py
+```
+
 <br>
 
 ## Sofwtare Engineering Best Practices

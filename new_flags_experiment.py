@@ -49,8 +49,8 @@ def main():
     df = pd.DataFrame(columns=['N','M','GC_LOWER_BOUND', 'GC_UPPER_BOUND', 'GC_LOWER_BOUND_REQUIRED_ITERATIONS','GC_UPPER_BOUND_REQUIRED_ITERATIONS', 'GC_SECONDS_TAKEN', 'METHOD'])
     df.to_csv(experiment_path, index=False)
 
-    N_M = [(1,4), (5, 1), (1,1),(2,1),(1,2),(3,1),(4,1),(2,2),(1,3),(2,3),(4,2)]
-    n_tests = 10
+    N_M = [(5, 1), (3,1), (4,2)]#, #(1,1),(2,1),(1,2),(3,1),(4,1),(2,2),(1,3),(2,3),(4,2)]
+    n_tests = 2
     for values in N_M:
         N, M = values
         for i in range(0, n_tests):
