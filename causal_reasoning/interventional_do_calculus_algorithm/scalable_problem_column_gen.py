@@ -10,16 +10,16 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-import pandas as pd
-from itertools import product
-
-from causal_reasoning.utils.probabilities_helper import find_conditional_probability2, find_probability2
 from causal_reasoning.interventional_do_calculus_algorithm.scalable_problem_init import InitScalable
 from causal_reasoning.utils.get_scalable_df import getScalableDataFrame
 
 BIG_M = 1e4
 DBG = False
-METHOD = -1
+# METHOD = -1
+NUMERIC_FOCUS = 3
+PRESOLVE = 2
+FEASIBILITYTOL = 1e-9
+OPTIMALITYTOL = 1e-9
 
 class MasterProblem:
     def __init__(self):
@@ -330,8 +330,8 @@ class ScalarProblem:
             self.master.update(newColumn=newColumn, index=len(self.columns_base), objCoeff=objCoeff, minimun= self.minimum)
             self.columns_base.append(newColumn)
             counter += 1
-            if counter >= 10000:
-                raise TimeoutError(f"Too many iterations")
+            if counter >= 1000:
+                raise TimeoutError(f"Too many iterations (mote than 1000)")
             logger.info(f"Iteration Number = {counter}")
 
         return counter
@@ -360,7 +360,7 @@ class ScalarProblem:
                                     betaVarsCost=betaVarsCoeffObjSubproblem, betaVarsBitsX0=betaVarsBitsX0, betaVarsBitsX1=betaVarsBitsX1,
                                     interventionValue=interventionValue, minimum= minimum)        
 
-    def solve(self, method: int = -1):
+    def solve(self, method: int = 1):
         """
         Gurobi does not support branch-and-price, as this requires to add columns
         at local nodes of the search tree. A heuristic is used instead, where the
@@ -371,6 +371,17 @@ class ScalarProblem:
         """
         self.master.model.params.Method = method
         self.subproblem.model.params.Method = method
+        
+        self.master.model.Params.NumericFocus = NUMERIC_FOCUS
+        self.master.model.Params.Presolve = PRESOLVE
+        self.master.model.Params.FeasibilityTol = FEASIBILITYTOL
+        self.master.model.Params.OptimalityTol = OPTIMALITYTOL
+
+        self.subproblem.model.Params.NumericFocus = NUMERIC_FOCUS
+        self.subproblem.model.Params.Presolve = PRESOLVE
+        self.subproblem.model.Params.FeasibilityTol = FEASIBILITYTOL
+        self.subproblem.model.Params.OptimalityTol = OPTIMALITYTOL
+         
         numberIterations = self._generate_patterns()
         self.master.model.setAttr("vType", self.master.vars, GRB.CONTINUOUS)
         self.master.model.optimize()

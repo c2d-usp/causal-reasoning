@@ -74,7 +74,7 @@ def main():
 
                 experiments_df = pd.read_csv("./outputs/experiment_results.csv")
         
-                new_row = {'N':N,'M':M,'GC_LOWER_BOUND':None,'GC_UPPER_BOUND':None,'GC_LOWER_BOUND_REQUIRED_ITERATIONS':None,'GC_UPPER_BOUND_REQUIRED_ITERATIONS':None, 'GC_SECONDS_TAKEN':None, 'LP_LOWER_BOUND':None, 'LP_UPPER_BOUND':None, 'LP_SECONDS_TAKEN':None, 'TRUE_VALUE':None, 'METHOD':None}
+                new_row = {'N':N,'M':M,'GC_LOWER_BOUND':None,'GC_UPPER_BOUND':None,'GC_LOWER_BOUND_REQUIRED_ITERATIONS':None,'GC_UPPER_BOUND_REQUIRED_ITERATIONS':None, 'GC_SECONDS_TAKEN':None, 'LP_LOWER_BOUND':None, 'LP_UPPER_BOUND':None, 'LP_SECONDS_TAKEN':None, 'TRUE_VALUE':None, 'METHOD':method}
                 new_row_df = pd.DataFrame([new_row])
 
                 #generate_data_for_scale_case(n=N, m=M)
@@ -106,7 +106,6 @@ def main():
                     new_row_df['GC_LOWER_BOUND_REQUIRED_ITERATIONS'] = lower_iterations 
                     new_row_df['GC_UPPER_BOUND_REQUIRED_ITERATIONS'] = upper_iterations
                     new_row_df['GC_SECONDS_TAKEN'] = total_time
-                    new_row_df['METHOD'] = method
                     logger.info("GC Ran")
                 except Exception as e:
                     logger.error(f"GC Error_N:{N}_M:{M}_: {e}")
