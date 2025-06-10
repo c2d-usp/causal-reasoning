@@ -360,7 +360,7 @@ class ScalarProblem:
                                     betaVarsCost=betaVarsCoeffObjSubproblem, betaVarsBitsX0=betaVarsBitsX0, betaVarsBitsX1=betaVarsBitsX1,
                                     interventionValue=interventionValue, minimum= minimum)        
 
-    def solve(self, method: int = 1):
+    def solve(self, method: int = -1):
         """
         Gurobi does not support branch-and-price, as this requires to add columns
         at local nodes of the search tree. A heuristic is used instead, where the
@@ -369,18 +369,19 @@ class ScalarProblem:
         solution could be overlooked, as additional columns are not generated at
         the local nodes of the search tree.
         """
+        if method != 1:            
+            self.master.model.Params.NumericFocus = NUMERIC_FOCUS
+            self.master.model.Params.Presolve = PRESOLVE
+            self.master.model.Params.FeasibilityTol = FEASIBILITYTOL
+            self.master.model.Params.OptimalityTol = OPTIMALITYTOL
+
+            self.subproblem.model.Params.NumericFocus = NUMERIC_FOCUS
+            self.subproblem.model.Params.Presolve = PRESOLVE
+            self.subproblem.model.Params.FeasibilityTol = FEASIBILITYTOL
+            self.subproblem.model.Params.OptimalityTol = OPTIMALITYTOL
+
         self.master.model.params.Method = 1
         self.subproblem.model.params.Method = 1
-        
-        self.master.model.Params.NumericFocus = NUMERIC_FOCUS
-        self.master.model.Params.Presolve = PRESOLVE
-        self.master.model.Params.FeasibilityTol = FEASIBILITYTOL
-        self.master.model.Params.OptimalityTol = OPTIMALITYTOL
-
-        self.subproblem.model.Params.NumericFocus = NUMERIC_FOCUS
-        self.subproblem.model.Params.Presolve = PRESOLVE
-        self.subproblem.model.Params.FeasibilityTol = FEASIBILITYTOL
-        self.subproblem.model.Params.OptimalityTol = OPTIMALITYTOL
          
         numberIterations = self._generate_patterns()
         self.master.model.setAttr("vType", self.master.vars, GRB.CONTINUOUS)
