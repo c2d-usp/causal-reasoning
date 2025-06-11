@@ -50,7 +50,7 @@ def main():
     # df.to_csv(experiment_path, index=False)
 
     N_M = [(5, 1)]#, (3,1), (4,2)]#, #(1,1),(2,1),(1,2),(3,1),(4,1),(2,2),(1,3),(2,3),(4,2)]
-    n_tests = 2
+    n_tests = 4
     for values in N_M:
         N, M = values
         for i in range(0, n_tests):
@@ -58,7 +58,7 @@ def main():
 
             experiments_df = pd.read_csv(experiment_path)
     
-            new_row = {'N':N,'M':M,'GC_LOWER_BOUND':None,'GC_UPPER_BOUND':None,'GC_LOWER_BOUND_REQUIRED_ITERATIONS':None,'GC_UPPER_BOUND_REQUIRED_ITERATIONS':None, 'GC_SECONDS_TAKEN':None, 'METHOD':1}
+            new_row = {'N':N,'M':M,'GC_LOWER_BOUND':None,'GC_UPPER_BOUND':None,'GC_LOWER_BOUND_REQUIRED_ITERATIONS':None,'GC_UPPER_BOUND_REQUIRED_ITERATIONS':None, 'GC_SECONDS_TAKEN':None, 'METHOD':i}
             new_row_df = pd.DataFrame([new_row])
 
             interventionValue = 1; targetValue = 1
@@ -74,12 +74,12 @@ def main():
                 start = tm.time()
                 scalarProblem = ScalarProblem.buildScalarProblem(M=M, N=N, interventionValue=interventionValue, targetValue=targetValue, df=scalable_df, minimum = True)
                 logger.info("MIN Problem Built")
-                lower , lower_iterations = scalarProblem.solve(method=i)
+                lower , lower_iterations = scalarProblem.solve(flag=i)
                 logger.info(f"Minimum Optimization N:{N}, M:{M}: Lower: {lower}, Iterations: {lower_iterations}")
 
                 scalarProblem = ScalarProblem.buildScalarProblem(M=M, N=N, interventionValue=interventionValue, targetValue=targetValue, df=scalable_df, minimum = False)
                 logger.info("MAX Problem Built")
-                upper, upper_iterations = scalarProblem.solve(method=i)
+                upper, upper_iterations = scalarProblem.solve(flag=i)
                 upper = -upper
                 logger.info(f"Maximum Optimization N:{N}, M:{M}: Upper: {upper}, Iterations: {upper_iterations}")
                 end = tm.time()

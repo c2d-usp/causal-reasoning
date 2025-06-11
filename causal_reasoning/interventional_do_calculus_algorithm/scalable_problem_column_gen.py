@@ -228,6 +228,32 @@ class SubProblem:
         self.model.setAttr("obj", self.bitsParametric, [-duals[dualKey] for dualKey in duals])        
         self.model.update()
 
+# class PhaseI:
+#     def __init__(self) -> None:
+#         # Build a model with original constraints
+#         phase1_model = gp.Model("PhaseI")
+        
+#         # n = number of U variables
+#         # Original variables (not the real master problem, just for feasibility)
+#         x = phase1_model.addVars(n, lb=0.0, name="x")
+
+#         # m = len(empiricalProbabilities)
+#         # Artificial variables for each constraint
+#         artificial = phase1_model.addVars(m, lb=0.0, name="a")
+
+#         # Constraints: Ax + a = b
+#         for i in range(m):
+#             constr_expr = gp.quicksum(A[i][j] * x[j] for j in range(n)) + artificial[i]
+#             phase1_model.addConstr(constr_expr == b[i])
+
+#         # Objective: minimize sum of artificial variables
+#         phase1_model.setObjective(gp.quicksum(artificial[i] for i in range(m)), GRB.MINIMIZE)
+
+#         # Solve using primal or dual simplex
+#         phase1_model.setParam("Method", 1)
+#         phase1_model.optimize()
+
+
 class ScalarProblem:
     def __init__(self, dataFrame, empiricalProbabilities: list[float], parametric_columns: dict[str, tuple[list[int]]], N: int, M: int, betaVarsCost: list[float],
                  betaVarsBitsX0: list[tuple[str]], betaVarsBitsX1: list[tuple[str]], interventionValue: int, minimum : bool):
@@ -360,7 +386,7 @@ class ScalarProblem:
                                     betaVarsCost=betaVarsCoeffObjSubproblem, betaVarsBitsX0=betaVarsBitsX0, betaVarsBitsX1=betaVarsBitsX1,
                                     interventionValue=interventionValue, minimum= minimum)        
 
-    def solve(self, method: int = -1):
+    def solve(self, flag: int = -1):
         """
         Gurobi does not support branch-and-price, as this requires to add columns
         at local nodes of the search tree. A heuristic is used instead, where the
@@ -369,16 +395,18 @@ class ScalarProblem:
         solution could be overlooked, as additional columns are not generated at
         the local nodes of the search tree.
         """
-        if method != 1:            
-            self.master.model.Params.NumericFocus = NUMERIC_FOCUS
+        if flag == 0:
             self.master.model.Params.Presolve = PRESOLVE
-            self.master.model.Params.FeasibilityTol = FEASIBILITYTOL
-            self.master.model.Params.OptimalityTol = OPTIMALITYTOL
-
-            self.subproblem.model.Params.NumericFocus = NUMERIC_FOCUS
             self.subproblem.model.Params.Presolve = PRESOLVE
-            self.subproblem.model.Params.FeasibilityTol = FEASIBILITYTOL
+        elif flag == 1:
+            self.master.model.Params.NumericFocus = NUMERIC_FOCUS
+            self.subproblem.model.Params.NumericFocus = NUMERIC_FOCUS
+        elif flag == 2:
+            self.master.model.Params.OptimalityTol = OPTIMALITYTOL
             self.subproblem.model.Params.OptimalityTol = OPTIMALITYTOL
+        else:
+            self.master.model.Params.FeasibilityTol = FEASIBILITYTOL
+            self.subproblem.model.Params.FeasibilityTol = FEASIBILITYTOL
 
         self.master.model.params.Method = 1
         self.subproblem.model.params.Method = 1
