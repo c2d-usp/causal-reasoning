@@ -84,7 +84,7 @@ def main():
     OPT_FEA_TOL = [1e-9, 1e-7, 1e-5, 1e-2]
 
     n_tests = 15
-    method = 4
+    method = 3
     for values in N_M:
         N, M = values
         for i in range(0, n_tests):
