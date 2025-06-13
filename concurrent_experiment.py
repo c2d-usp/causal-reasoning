@@ -84,12 +84,12 @@ def main():
     OPT_FEA_TOL = [1e-9, 1e-7, 1e-5, 1e-2]
 
     n_tests = 15
+    method = 4
     for values in N_M:
         N, M = values
         for i in range(0, n_tests):
-            for method in METHOD:
-                logger.info(f"{i}th N:{N} M:{M}")
-                run_test(N=N, M=M, method=method, i=i)
+            logger.info(f"{i}th N:{N} M:{M}")
+            run_test(N=N, M=M, method=method, i=i)
     logger.info("Done")
 
 if __name__=="__main__":
