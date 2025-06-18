@@ -12,8 +12,8 @@ from causal_reasoning.utils.get_scalable_df import getScalableDataFrame
 from causal_reasoning.causal_model import CausalModel
 from causal_reasoning.utils.data_gen import generate_data_for_scale_case
 
-EXPERIMENT_PATH = "./outputs/full_flags_experiment_results.csv"
-ERROR_PATH = "./outputs/full_flags_error_log.txt"
+EXPERIMENT_PATH = "./outputs/second_full_flags_experiment_results.csv"
+ERROR_PATH = "./outputs/second_full_flags_error_log.txt"
 
 
 def run_test(N, M, method, presolve, numeric_focus, fea_tol, opt_tol, i):
@@ -69,15 +69,22 @@ def main():
 
     df = pd.DataFrame(columns=['N','M','GC_LOWER_BOUND', 'GC_UPPER_BOUND', 'GC_LOWER_BOUND_REQUIRED_ITERATIONS','GC_UPPER_BOUND_REQUIRED_ITERATIONS', 'GC_SECONDS_TAKEN', 'METHOD'])
     df.to_csv(EXPERIMENT_PATH, index=False)
-
     N_M = [
-            (1,1),(1,2),(1,3),(1,4),(1,5),(1,6),
-            (2,1),(2,2),(2,3),(2,4),(2,5),#(2,6),
-            (3,1),(3,2),(3,3),(3,4),#(3,5),(3,6),
-            (4,1),(4,2),(4,3),#(4,4),(4,5),(4,6),
-            (5,1),(5,2),#(5,3),(5,4),(5,5),(5,6),
-            (6,1),#(6,2),(6,3),(6,4),(6,5),(6,6),
+        (3,1),(4,1),(5,1),(6,1),
+        (3,2),(4,2),(5,2),
+        (3,3),(4,3),
+        (3,4),
+        (2,5),
     ]
+
+    # N_M = [
+    #         (1,1),(1,2),(1,3),(1,4),(1,5),(1,6),
+    #         (2,1),(2,2),(2,3),(2,4),(2,5),#(2,6),
+    #         (3,1),(3,2),(3,3),(3,4),#(3,5),(3,6),
+    #         (4,1),(4,2),(4,3),#(4,4),(4,5),(4,6),
+    #         (5,1),(5,2),#(5,3),(5,4),(5,5),(5,6),
+    #         (6,1),#(6,2),(6,3),(6,4),(6,5),(6,6),
+    # ]
     METHOD = [0, 1, 2, 3, 4]
     PRESOLVE = [0, 1, 2]
     NUMERIC_FOCUS = [1, 2, 3]

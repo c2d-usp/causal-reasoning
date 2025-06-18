@@ -352,7 +352,7 @@ class ScalarProblem:
             self.master.update(newColumn=newColumn, index=len(self.columns_base), objCoeff=objCoeff, minimun= self.minimum)
             self.columns_base.append(newColumn)
             counter += 1
-            max = 1000
+            max = 1700
             if counter >= max:
                 raise TimeoutError(f"Too many iterations. (Max {max})")
             logger.info(f"Iteration Number = {counter}")
