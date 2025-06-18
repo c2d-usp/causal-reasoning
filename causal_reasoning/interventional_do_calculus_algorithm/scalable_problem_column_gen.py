@@ -227,7 +227,7 @@ class SubProblem:
         self.model.update()
 
 class PhaseI:
-    def __init__(self) -> None:
+    def __init__(self, n, m, A, b) -> None:
         # Build a model with original constraints
         phase1_model = gp.Model("PhaseI")
         
